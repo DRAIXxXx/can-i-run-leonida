@@ -73,6 +73,7 @@ function update(fromSlider = false) {
     ramSlider.valueAsNumber = nearest;
   }
   ramSlider.setAttribute("aria-valuetext", `${ramPresets[Math.round(ramSlider.valueAsNumber)]} GB`);
+  ramSlider.style.setProperty("--fill", `${(ramSlider.valueAsNumber / Number(ramSlider.max)) * 100}%`);
   const processor = selectedModel(cpu, cpuCustom);
   const graphics = selectedModel(gpu, gpuCustom);
   const consoleComparison = reference.value !== "low";

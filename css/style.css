@@ -1,6 +1,6 @@
 @font-face {
   font-family: "GTA Art Deco";
-  src: url("./gta-art-deco-medium.ttf") format("truetype");
+  src: url("../assets/fonts/gta-art-deco-medium.ttf") format("truetype");
   font-style: normal;
   font-weight: 500;
   font-display: swap;
@@ -115,21 +115,46 @@ h1 {
   background-repeat: no-repeat;
   background-size: 15px;
 }
-.field input:hover, .field select:hover, .ram-value:focus-within { border-color: var(--teal); }
+.field input:hover, .field select:hover { border-color: var(--teal); }
 .field input::placeholder { color: var(--muted); opacity: 1; }
 .ram-field { color: var(--muted); font-size: .875rem; }
-.ram-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ram-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .ram-value {
-  display: inline-flex; align-items: baseline; gap: 4px; padding: 7px 14px;
+  display: inline-flex; flex: 0 0 auto; align-items: baseline; gap: 4px; padding: 7px 14px;
   border: 1px solid var(--line); border-radius: 999px; background: #130f2266;
+  transition: border-color 150ms ease;
 }
+.ram-value:hover, .ram-value:focus-within { border-color: var(--teal); }
 .ram-value input {
   appearance: textfield; width: 5ch; min-width: 0; border: 0; padding: 1px;
   background: transparent; color: #f3edf4; font: inherit; font-size: 1rem; text-align: right;
 }
+.ram-value input:focus, .ram-value input:focus-visible { outline: none; }
 .ram-value input::-webkit-inner-spin-button, .ram-value input::-webkit-outer-spin-button { appearance: none; margin: 0; }
-.ram-field input[type="range"] { display: block; width: 100%; height: 32px; margin: 0; cursor: pointer; accent-color: var(--teal); }
-.ram-scale { display: flex; justify-content: space-between; font-size: .8125rem; }
+.ram-field input[type="range"] {
+  --fill: 55.56%;
+  display: block; width: 100%; height: 32px; margin: 0; padding: 0;
+  appearance: none; -webkit-appearance: none; background: transparent; cursor: pointer;
+}
+.ram-field input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px; border-radius: 999px;
+  background: linear-gradient(90deg, var(--teal) var(--fill), #4a3a4b var(--fill));
+}
+.ram-field input[type="range"]::-webkit-slider-thumb {
+  appearance: none; -webkit-appearance: none;
+  width: 18px; height: 18px; margin-top: -6px; border: 0; border-radius: 50%;
+  background: var(--teal); box-shadow: 0 0 0 4px #9af7e31f, 0 0 12px #9af7e359;
+  transition: transform 120ms ease;
+}
+.ram-field input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
+.ram-field input[type="range"]::-moz-range-track { height: 6px; border-radius: 999px; background: #4a3a4b; }
+.ram-field input[type="range"]::-moz-range-progress { height: 6px; border-radius: 999px; background: var(--teal); }
+.ram-field input[type="range"]::-moz-range-thumb {
+  width: 18px; height: 18px; border: 0; border-radius: 50%;
+  background: var(--teal); box-shadow: 0 0 0 4px #9af7e31f, 0 0 12px #9af7e359;
+}
+.ram-field input[type="range"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: 999px; }
+.ram-scale { display: flex; justify-content: space-between; margin-top: 2px; font-size: .8125rem; }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 .result {
   border-inline-start: 1px solid var(--line);
@@ -167,6 +192,11 @@ h1 {
   .settings { gap: 12px; }
   .result { border-inline-start: 0; border-top: 1px solid var(--line); }
   .backdrop-image { object-position: var(--mobile-position, 42%) top; }
+  .ram-value { padding: 6px 12px; }
+  .ram-field input[type="range"] { height: 36px; }
+  .ram-field input[type="range"]::-webkit-slider-thumb { width: 20px; height: 20px; margin-top: -7px; }
+  .ram-field input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; }
+  .ram-scale { font-size: .75rem; }
 }
 @media (max-width: 355px) {
   .wrap { width: calc(100% - 24px); }
@@ -265,6 +295,9 @@ h1 {
 @media (pointer: coarse) {
   .menu-search { font-size: 16px; }
   .choice-option { min-height: 44px; touch-action: manipulation; }
+  .ram-field input[type="range"] { height: 44px; touch-action: manipulation; }
+  .ram-field input[type="range"]::-webkit-slider-thumb { width: 22px; height: 22px; margin-top: -8px; }
+  .ram-field input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; }
 }
 
 @media (pointer: coarse) {

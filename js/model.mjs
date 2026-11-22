@@ -10,7 +10,7 @@ const cpuBands = {
   ],
   near: ["12400", "13400", "11700k", "11600k", "5700x", "5800x", "5600", "5600x"],
   below: [
-    "13100", "12100", "11400", "10700k", "10600k", "10400", "10100",
+    "13100", "12100", "11400", "11320h", "10700k", "10600k", "10400", "10100",
     "9900k", "9700k", "8700k", "5600g", "5500", "3700x", "3600", "3600x", "2600x",
   ],
 };
@@ -34,7 +34,7 @@ const gpuBands = {
     "rx 6700 xt", "rx 6700", "rx 6650 xt", "rx 6600 xt", "arc b580", "arc b570",
     "arc a770 16gb", "arc a750",
   ],
-  below: ["gtx 1650 super", "gtx 1660", "rx 5500 xt", "rtx 3060 8gb", "rtx 3050 8gb", "rtx 3050 6gb", "rtx 2060 super", "rtx 2060", "rx 6600", "rx 6500 xt"],
+  below: ["gtx 1650 laptop", "gtx 1650 super", "gtx 1660", "rx 5500 xt", "rtx 3060 8gb", "rtx 3050 8gb", "rtx 3050 6gb", "rtx 2060 super", "rtx 2060", "rx 6600", "rx 6500 xt"],
 };
 
 // Approximate desktop gaming bands around the community's Series X examples.
@@ -43,7 +43,7 @@ const seriesXCpuBands = {
   above: [...cpuBands.above, "12400", "13400", "5700x", "5800x", "5600x"],
   near: ["3700x", "5600", "11400", "11700k", "11600k", "10700k", "10600k",
     "9900k", "9700k", "13100", "12100", "5600g", "5500"],
-  below: ["10400", "10100", "3600", "3600x", "2600x", "8700k"],
+  below: ["11320h", "10400", "10100", "3600", "3600x", "2600x", "8700k"],
 };
 const seriesXGpuBands = {
   above: gpuBands.above.filter(model => ![
@@ -82,13 +82,13 @@ const proGpuBands = {
 };
 const seriesSCpuBands = {
   above: [...new Set([...seriesXCpuBands.above, ...seriesXCpuBands.near])],
-  near: ["3600", "3600x", "10400", "8700k"],
+  near: ["3600", "3600x", "10400", "8700k", "11320h"],
   below: ["10100", "2600x", "1600"],
 };
 const seriesSGpuBands = {
-  above: [...gpuBands.above, ...gpuBands.near, ...gpuBands.below].filter(model => !["gtx 1650 super", "gtx 1660", "rx 5500 xt"].includes(model)),
+  above: [...gpuBands.above, ...gpuBands.near, ...gpuBands.below].filter(model => !["gtx 1650 laptop", "gtx 1650 super", "gtx 1660", "rx 5500 xt"].includes(model)),
   near: ["gtx 1650 super", "gtx 1660", "rx 5500 xt"],
-  below: ["gtx 1650", "gtx 1050 ti", "rx 560"],
+  below: ["gtx 1650 laptop", "gtx 1650", "gtx 1050 ti", "rx 560"],
 };
 const consoleRanges = {
   "series-x": { name: "Series X", CPU: seriesXCpuBands, GPU: seriesXGpuBands },
@@ -155,11 +155,11 @@ function gpuModel(graphics) {
 }
 
 function gpuKey(graphics) {
-  if (laptopGraphics.test(graphics)) return;
   const model = gpuModel(graphics);
   if (!model) return;
   const memory = graphicsMemory(graphics);
-  return memoryVariants.has(model) && memory ? `${model} ${memory}gb` : model;
+  const key = memoryVariants.has(model) && memory ? `${model} ${memory}gb` : model;
+  return laptopGraphics.test(graphics) ? `${key} laptop` : key;
 }
 
 export function shaderTestPlatform(graphics) {
