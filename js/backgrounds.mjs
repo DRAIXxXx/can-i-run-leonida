@@ -21,7 +21,7 @@ async function advance(version) {
   const next = new Image();
   next.className = 'backdrop-image';
   next.alt = '';
-  next.src = `leonida-${nextIndex + 1}.webp`;
+  next.src = `assets/images/leonida-${nextIndex + 1}.webp`;
   try {
     await next.decode();
   } catch {
