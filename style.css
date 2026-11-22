@@ -257,4 +257,7 @@ h1 {
 .sources ul { padding-left: 18px; margin: 8px 0 0; }
 .sources li { margin-top: 4px; }
 
-.menu-search { position: sticky; top: 0; z-index: 1; width: 100%; min-height: 40px; margin-bottom: 8px; padding: 10px 14px; border: 1px solid #ffffff38; border-radius: 14px; background: #23182fed; color: #fff1f3; font: inherit; font-size: .875rem; }
+.menu-search { position: sticky; top: 0; z-index: 1; width: 100%; min-height: 40px; margin-bottom: 8px; padding: 10px 14px; border: 1px solid #ffffff38; border-radius: 14px; background: #ffffff0b; -webkit-backdrop-filter: blur(24px) saturate(130%); backdrop-filter: blur(24px) saturate(130%); color: #fff1f3; font: inherit; font-size: .875rem; }
+
+.menu-search::placeholder { color: #dbc8dc; opacity: 1; }
+.menu-search:focus { border-color: #9af7e380; outline: none; box-shadow: 0 0 0 2px #9af7e318; }
