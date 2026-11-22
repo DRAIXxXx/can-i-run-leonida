@@ -12,7 +12,7 @@ The estimator uses hand-maintained benchmark bands and community predictions. Le
 
 ## Font
 
-The GTA Art Deco font file is excluded because its embedded terms restrict redistribution. With appropriate permission, place a copy at `fonts/gta-art-deco-medium.ttf`. Otherwise, the site uses its system font fallback.
+The interface uses GTA Art Deco Medium, included with permission from the site owner. The font retains its embedded terms.
 
 ## Artwork
 
