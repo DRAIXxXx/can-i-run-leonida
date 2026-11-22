@@ -1,4 +1,4 @@
-import { assessHardware, graphicsMemory } from "./model.mjs?v=3";
+import { assessHardware, graphicsMemory } from "./model.mjs?v=4";
 
 const form = document.getElementById("settings");
 const verdict = document.getElementById("verdict");
@@ -56,7 +56,7 @@ const statusLabel = {
   outside: "ARM",
   uncertain: "Uncertain",
 };
-const { cpu, cpuCustom, gpu, gpuCustom, ram, ramSlider, reference } = form.elements;
+const { cpu, cpuCustom, gpu, gpuCustom, ram, ramSlider, reference, ramType } = form.elements;
 const ramPresets = [4, 8, 12, 16, 24, 32, 48, 64, 96, 128];
 
 function selectedModel(select, custom) {
@@ -77,7 +77,10 @@ function update(fromSlider = false) {
   const graphics = selectedModel(gpu, gpuCustom);
   const consoleComparison = reference.value !== "low";
   const baseline = references[reference.value];
-  const result = assessHardware(processor, graphics, ram.value, reference.value);
+  const ramReference = ramType.value === "ddr5"
+    ? "DDR5 · 16 GB provisional floor"
+    : consoleComparison ? "32 GB DDR4 suggested" : "16 GB DDR4 estimate";
+  const result = assessHardware(processor, graphics, ram.value, reference.value, ramType.value);
   if (verdict.textContent !== result.verdict) verdict.textContent = result.verdict;
   if (estimateLabel.textContent !== baseline.label) estimateLabel.textContent = baseline.label;
   const names = { CPU: processor.trim(), GPU: graphics.trim(), RAM: `${ram.value} GB of RAM` };
@@ -95,7 +98,8 @@ function update(fromSlider = false) {
   if (verdictReason.textContent !== reason) verdictReason.textContent = reason;
   for (const [part, row] of Object.entries(resultRows)) {
     const label = referenceRows[part];
-    if (label.textContent !== baseline[part]) label.textContent = baseline[part];
+    const referenceText = part === "RAM" ? ramReference : baseline[part];
+    if (label.textContent !== referenceText) label.textContent = referenceText;
     const status = result.statuses[part];
     if (row.dataset.status === status) continue;
     row.dataset.status = status;

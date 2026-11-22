@@ -175,16 +175,17 @@ function bandFor(key, bands) {
   return Object.keys(bands).find(band => bands[band].includes(key)) ?? "unknown";
 }
 
-export function assessHardware(cpu, gpu, ram, reference = "low") {
+export function assessHardware(cpu, gpu, ram, reference = "low", ramType = "ddr4") {
   const processor = cpu.trim();
   const graphics = gpu.trim();
   const memory = Number(ram);
   const consoleRange = consoleRanges[reference];
   const consoleComparison = Boolean(consoleRange);
-  const memoryTarget = consoleComparison ? 32 : 16;
+  const ddr5 = ramType === "ddr5";
+  const memoryTarget = ddr5 ? 16 : consoleComparison ? 32 : 16;
   let ramStatus = !Number.isFinite(memory) || memory < 1 ? "empty" : "near";
   if (ramStatus !== "empty") {
-    if (memory < memoryTarget) ramStatus = consoleComparison ? "uncertain" : "below";
+    if (memory < memoryTarget) ramStatus = consoleComparison || ddr5 ? "uncertain" : "below";
     if (memory > memoryTarget) ramStatus = "above";
   }
   const statuses = {
@@ -200,7 +201,7 @@ export function assessHardware(cpu, gpu, ram, reference = "low") {
     const name = consoleRange.name;
     if (parts.includes("below")) return { verdict: `Below the ${name} hardware range`, statuses };
     if (parts.includes("unknown")) return { verdict: `Partial ${name} comparison`, statuses };
-    if (statuses.GPU === "uncertain") return { verdict: `Uncertain ${name} comparison`, statuses };
+    if (parts.includes("uncertain")) return { verdict: `Uncertain ${name} comparison`, statuses };
     if (statuses.CPU === "above" && statuses.GPU === "above") {
       return { verdict: `Above the ${name} hardware range`, statuses };
     }
@@ -208,5 +209,6 @@ export function assessHardware(cpu, gpu, ram, reference = "low") {
   }
   if (parts.includes("below")) return { verdict: "Your PC may struggle to run Leonida", statuses };
   if (parts.includes("unknown")) return { verdict: "Your PC’s outlook is unclear", statuses };
+  if (parts.includes("uncertain")) return { verdict: "Your PC’s outlook is unclear", statuses };
   return { verdict: "Your PC could run Leonida", statuses };
 }

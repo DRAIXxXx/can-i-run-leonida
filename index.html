@@ -8,7 +8,7 @@
   <title>Can I Run Leonida</title>
   <link rel="icon" href="leonida-logo.png" type="image/png">
   <link rel="stylesheet" href="style.css?v=2">
-  <script type="module" src="app.mjs?v=3"></script>
+  <script type="module" src="app.mjs?v=4"></script>
   <script type="module" src="menus.mjs"></script>
   <script type="module" src="backgrounds.mjs"></script>
 </head>
@@ -181,6 +181,12 @@
         <label class="field" hidden>Custom GPU
           <input name="gpuCustom" type="text" placeholder="e.g. NVIDIA RTX 3070" autocomplete="off" spellcheck="false">
         </label>
+        <label class="field">RAM type
+          <select name="ramType">
+            <option value="ddr4">DDR4</option>
+            <option value="ddr5">DDR5</option>
+          </select>
+        </label>
         <div class="ram-field">
           <div class="ram-top">
             <label for="ram-slider">RAM</label>
@@ -220,7 +226,7 @@
         </div>
         <details class="sources">
           <summary>Sources</summary>
-          <p>Hardware ranges use community predictions and general PC benchmarks. They have not been validated in Leonida gameplay. All four console comparisons use the admin’s approximate PC equivalents. The 32 GB PC RAM suggestion is community guidance, while 16 GB remains uncertain. Console shared memory and PC RAM are different arrangements. PS5 Pro estimates vary with the game and upscaling mode.</p>
+          <p>Hardware ranges use community predictions and general PC benchmarks. They have not been validated in Leonida gameplay. All four console comparisons use the admin’s approximate PC equivalents. The admin suggests 32 GB DDR4 and expects DDR5 to be suitable. DDR4 below 32 GB remains uncertain in console comparisons. DDR5 uses 16 GB as a provisional capacity floor, with smaller amounts marked uncertain. These RAM assumptions are untested in Leonida. Console shared memory and PC RAM are different arrangements. PS5 Pro estimates vary with the game and upscaling mode.</p>
           <ul>
             <li><a href="https://github.com/ItsNotRexed/Leonida" target="_blank" rel="noopener">Leonida project</a></li>
             <li><a href="https://www.xbox.com/en-US/consoles/xbox-series-x#tech-specs" target="_blank" rel="noopener">Xbox Series X specs</a></li>
