@@ -1,6 +1,7 @@
 const menus = [];
+const useMobilePicker = matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 for (const select of document.querySelectorAll('.field select')) {
-  if (!('showPopover' in HTMLElement.prototype)) continue;
+  if (useMobilePicker || !('showPopover' in HTMLElement.prototype)) continue;
   const label = select.closest('label');
   const name = label.firstChild.textContent.trim();
   const trigger = document.createElement('button');

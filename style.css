@@ -266,3 +266,7 @@ h1 {
   .menu-search { font-size: 16px; }
   .choice-option { min-height: 44px; touch-action: manipulation; }
 }
+
+@media (pointer: coarse) {
+  .field select { min-height: 48px; font-size: 16px; -webkit-appearance: menulist; appearance: auto; background-image: none; padding-right: 18px; }
+}
