@@ -1,0 +1,7 @@
+.env
+.env.*
+.openai/
+.git/
+fonts/
+.DS_Store
+node_modules/

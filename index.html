@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100c20">
+  <meta name="description" content="Compare your CPU, GPU and RAM with an unofficial entry baseline while Leonida gameplay remains unverified.">
+  <title>Can I Run Leonida</title>
+  <link rel="icon" href="leonida-logo.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.mjs"></script>
+  <script type="module" src="menus.mjs"></script>
+  <script type="module" src="backgrounds.mjs"></script>
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true">
+    <img class="backdrop-image is-visible" src="leonida-1.webp" alt="" fetchpriority="high">
+  </div>
+  <main class="wrap">
+    <img class="title-logo" src="leonida-logo.png" width="144" height="104" alt="Leonida">
+    <h1>Can I run <span class="title-accent">Leonida?</span></h1>
+
+    <div class="checker">
+      <form class="settings" id="settings" aria-label="Your PC specs">
+        <label class="field">Compare to
+          <select name="reference">
+            <option value="series-x">Xbox Series X</option>
+            <option value="low">Community estimate for 1080p Low</option>
+          </select>
+        </label>
+        <label class="field">CPU
+          <select name="cpu" id="cpu">
+            <optgroup label="Intel">
+              <option value="Intel Core i5-11400F" selected>Intel Core i5-11400F</option>
+              <option value="Intel Core Ultra 9 285K">Intel Core Ultra 9 285K</option>
+              <option value="Intel Core Ultra 7 265K">Intel Core Ultra 7 265K</option>
+              <option value="Intel Core Ultra 5 245K">Intel Core Ultra 5 245K</option>
+              <option value="Intel Core i9-14900K / KF">Intel Core i9-14900K / KF</option>
+              <option value="Intel Core i7-14700K / KF">Intel Core i7-14700K / KF</option>
+              <option value="Intel Core i5-14600K / KF">Intel Core i5-14600K / KF</option>
+              <option value="Intel Core i5-14400 / F">Intel Core i5-14400 / F</option>
+              <option value="Intel Core i9-13900K / KF">Intel Core i9-13900K / KF</option>
+              <option value="Intel Core i7-13700K / KF">Intel Core i7-13700K / KF</option>
+              <option value="Intel Core i5-13600K / KF">Intel Core i5-13600K / KF</option>
+              <option value="Intel Core i5-13400 / F">Intel Core i5-13400 / F</option>
+              <option value="Intel Core i3-13100 / F">Intel Core i3-13100 / F</option>
+              <option value="Intel Core i9-12900K / KF">Intel Core i9-12900K / KF</option>
+              <option value="Intel Core i7-12700K / KF">Intel Core i7-12700K / KF</option>
+              <option value="Intel Core i5-12600K / KF">Intel Core i5-12600K / KF</option>
+              <option value="Intel Core i5-12400 / F">Intel Core i5-12400 / F</option>
+              <option value="Intel Core i3-12100 / F">Intel Core i3-12100 / F</option>
+              <option value="Intel Core i7-11700 / K / F">Intel Core i7-11700 / K / F</option>
+              <option value="Intel Core i5-11600K / KF">Intel Core i5-11600K / KF</option>
+              <option value="Intel Core i5-11400F / 11400">Intel Core i5-11400F / 11400</option>
+              <option value="Intel Core i7-10700 / K / F">Intel Core i7-10700 / K / F</option>
+              <option value="Intel Core i5-10600K / KF">Intel Core i5-10600K / KF</option>
+              <option value="Intel Core i5-10400 / F">Intel Core i5-10400 / F</option>
+              <option value="Intel Core i3-10100 / F">Intel Core i3-10100 / F</option>
+              <option value="Intel Core i9-9900K / KF">Intel Core i9-9900K / KF</option>
+              <option value="Intel Core i7-9700K / KF">Intel Core i7-9700K / KF</option>
+              <option value="Intel Core i7-8700K">Intel Core i7-8700K</option>
+            </optgroup>
+            <optgroup label="AMD">
+              <option value="AMD Ryzen 7 9850X3D">AMD Ryzen 7 9850X3D</option>
+              <option value="AMD Ryzen 9 9950X3D">AMD Ryzen 9 9950X3D</option>
+              <option value="AMD Ryzen 7 9800X3D">AMD Ryzen 7 9800X3D</option>
+              <option value="AMD Ryzen 7 9700X">AMD Ryzen 7 9700X</option>
+              <option value="AMD Ryzen 5 9600X">AMD Ryzen 5 9600X</option>
+              <option value="AMD Ryzen 9 7950X3D">AMD Ryzen 9 7950X3D</option>
+              <option value="AMD Ryzen 7 7800X3D">AMD Ryzen 7 7800X3D</option>
+              <option value="AMD Ryzen 7 7700 / X">AMD Ryzen 7 7700 / X</option>
+              <option value="AMD Ryzen 5 7600X3D">AMD Ryzen 5 7600X3D</option>
+              <option value="AMD Ryzen 5 7600 / X">AMD Ryzen 5 7600 / X</option>
+              <option value="AMD Ryzen 5 7500F">AMD Ryzen 5 7500F</option>
+              <option value="AMD Ryzen 7 5800X3D">AMD Ryzen 7 5800X3D</option>
+              <option value="AMD Ryzen 7 5700X3D">AMD Ryzen 7 5700X3D</option>
+              <option value="AMD Ryzen 7 5700X / 5800X">AMD Ryzen 7 5700X / 5800X</option>
+              <option value="AMD Ryzen 5 5600 / X">AMD Ryzen 5 5600 / X</option>
+              <option value="AMD Ryzen 5 5600G / 5500">AMD Ryzen 5 5600G / 5500</option>
+              <option value="AMD Ryzen 7 3700X">AMD Ryzen 7 3700X</option>
+              <option value="AMD Ryzen 5 3600 / X">AMD Ryzen 5 3600 / X</option>
+              <option value="AMD Ryzen 5 2600 / X">AMD Ryzen 5 2600 / X</option>
+              <option value="AMD Ryzen 5 1600">AMD Ryzen 5 1600</option>
+            </optgroup>
+            <option value="custom">Enter another model…</option>
+          </select>
+        </label>
+        <label class="field" hidden>Custom CPU
+          <input name="cpuCustom" type="text" placeholder="e.g. Intel Core i5-11400F" autocomplete="off" spellcheck="false">
+        </label>
+        <label class="field">GPU
+          <select name="gpu" id="gpu">
+            <optgroup label="NVIDIA GeForce">
+              <option value="NVIDIA GeForce RTX 5090">NVIDIA GeForce RTX 5090</option>
+              <option value="NVIDIA GeForce RTX 5080">NVIDIA GeForce RTX 5080</option>
+              <option value="NVIDIA GeForce RTX 5070 Ti">NVIDIA GeForce RTX 5070 Ti</option>
+              <option value="NVIDIA GeForce RTX 5070">NVIDIA GeForce RTX 5070</option>
+              <option value="NVIDIA GeForce RTX 5060 Ti 16 GB">NVIDIA GeForce RTX 5060 Ti 16 GB</option>
+              <option value="NVIDIA GeForce RTX 5060 Ti 8 GB">NVIDIA GeForce RTX 5060 Ti 8 GB</option>
+              <option value="NVIDIA GeForce RTX 5060">NVIDIA GeForce RTX 5060</option>
+              <option value="NVIDIA GeForce RTX 5050">NVIDIA GeForce RTX 5050</option>
+              <option value="NVIDIA GeForce RTX 4090">NVIDIA GeForce RTX 4090</option>
+              <option value="NVIDIA GeForce RTX 4080 Super">NVIDIA GeForce RTX 4080 Super</option>
+              <option value="NVIDIA GeForce RTX 4080">NVIDIA GeForce RTX 4080</option>
+              <option value="NVIDIA GeForce RTX 4070 Ti Super">NVIDIA GeForce RTX 4070 Ti Super</option>
+              <option value="NVIDIA GeForce RTX 4070 Ti">NVIDIA GeForce RTX 4070 Ti</option>
+              <option value="NVIDIA GeForce RTX 4070 Super">NVIDIA GeForce RTX 4070 Super</option>
+              <option value="NVIDIA GeForce RTX 4070">NVIDIA GeForce RTX 4070</option>
+              <option value="NVIDIA GeForce RTX 4060 Ti 16 GB">NVIDIA GeForce RTX 4060 Ti 16 GB</option>
+              <option value="NVIDIA GeForce RTX 4060 Ti 8 GB">NVIDIA GeForce RTX 4060 Ti 8 GB</option>
+              <option value="NVIDIA GeForce RTX 4060">NVIDIA GeForce RTX 4060</option>
+              <option value="NVIDIA GeForce RTX 3090 Ti">NVIDIA GeForce RTX 3090 Ti</option>
+              <option value="NVIDIA GeForce RTX 3090">NVIDIA GeForce RTX 3090</option>
+              <option value="NVIDIA GeForce RTX 3080 Ti">NVIDIA GeForce RTX 3080 Ti</option>
+              <option value="NVIDIA GeForce RTX 3080 10 GB">NVIDIA GeForce RTX 3080 10 GB</option>
+              <option value="NVIDIA GeForce RTX 3070 Ti">NVIDIA GeForce RTX 3070 Ti</option>
+              <option value="NVIDIA GeForce RTX 3070 (8 GB VRAM)" selected>NVIDIA GeForce RTX 3070 (8 GB VRAM)</option>
+              <option value="NVIDIA GeForce RTX 3060 Ti">NVIDIA GeForce RTX 3060 Ti</option>
+              <option value="NVIDIA GeForce RTX 3060 12 GB">NVIDIA GeForce RTX 3060 12 GB</option>
+              <option value="NVIDIA GeForce RTX 3060 8 GB">NVIDIA GeForce RTX 3060 8 GB</option>
+              <option value="NVIDIA GeForce RTX 3050 8 GB">NVIDIA GeForce RTX 3050 8 GB</option>
+              <option value="NVIDIA GeForce RTX 3050 6 GB">NVIDIA GeForce RTX 3050 6 GB</option>
+              <option value="NVIDIA GeForce RTX 2080 Ti">NVIDIA GeForce RTX 2080 Ti</option>
+              <option value="NVIDIA GeForce RTX 2080 Super">NVIDIA GeForce RTX 2080 Super</option>
+              <option value="NVIDIA GeForce RTX 2070 Super">NVIDIA GeForce RTX 2070 Super</option>
+              <option value="NVIDIA GeForce RTX 2070">NVIDIA GeForce RTX 2070</option>
+              <option value="NVIDIA GeForce RTX 2060 Super">NVIDIA GeForce RTX 2060 Super</option>
+              <option value="NVIDIA GeForce RTX 2060">NVIDIA GeForce RTX 2060</option>
+            </optgroup>
+            <optgroup label="AMD Radeon">
+              <option value="AMD Radeon RX 9070 XT">AMD Radeon RX 9070 XT</option>
+              <option value="AMD Radeon RX 9070">AMD Radeon RX 9070</option>
+              <option value="AMD Radeon RX 9070 GRE">AMD Radeon RX 9070 GRE</option>
+              <option value="AMD Radeon RX 9060 XT 16 GB">AMD Radeon RX 9060 XT 16 GB</option>
+              <option value="AMD Radeon RX 9060 XT 8 GB">AMD Radeon RX 9060 XT 8 GB</option>
+              <option value="AMD Radeon RX 7900 XTX">AMD Radeon RX 7900 XTX</option>
+              <option value="AMD Radeon RX 7900 XT">AMD Radeon RX 7900 XT</option>
+              <option value="AMD Radeon RX 7900 GRE">AMD Radeon RX 7900 GRE</option>
+              <option value="AMD Radeon RX 7800 XT">AMD Radeon RX 7800 XT</option>
+              <option value="AMD Radeon RX 7700 XT">AMD Radeon RX 7700 XT</option>
+              <option value="AMD Radeon RX 7600 XT">AMD Radeon RX 7600 XT</option>
+              <option value="AMD Radeon RX 7600">AMD Radeon RX 7600</option>
+              <option value="AMD Radeon RX 6950 XT">AMD Radeon RX 6950 XT</option>
+              <option value="AMD Radeon RX 6900 XT">AMD Radeon RX 6900 XT</option>
+              <option value="AMD Radeon RX 6800 XT">AMD Radeon RX 6800 XT</option>
+              <option value="AMD Radeon RX 6800">AMD Radeon RX 6800</option>
+              <option value="AMD Radeon RX 6750 XT">AMD Radeon RX 6750 XT</option>
+              <option value="AMD Radeon RX 6700 XT">AMD Radeon RX 6700 XT</option>
+              <option value="AMD Radeon RX 6700">AMD Radeon RX 6700</option>
+              <option value="AMD Radeon RX 6650 XT">AMD Radeon RX 6650 XT</option>
+              <option value="AMD Radeon RX 6600 XT">AMD Radeon RX 6600 XT</option>
+              <option value="AMD Radeon RX 6600">AMD Radeon RX 6600</option>
+              <option value="AMD Radeon RX 6500 XT">AMD Radeon RX 6500 XT</option>
+            </optgroup>
+            <optgroup label="Intel Arc">
+              <option value="Intel Arc B580">Intel Arc B580</option>
+              <option value="Intel Arc B570">Intel Arc B570</option>
+              <option value="Intel Arc A770 16 GB">Intel Arc A770 16 GB</option>
+              <option value="Intel Arc A750">Intel Arc A750</option>
+            </optgroup>
+            <optgroup label="NVIDIA laptop GPUs">
+              <option value="NVIDIA GeForce RTX 5070 Laptop">NVIDIA GeForce RTX 5070 Laptop</option>
+              <option value="NVIDIA GeForce RTX 5060 Laptop">NVIDIA GeForce RTX 5060 Laptop</option>
+              <option value="NVIDIA GeForce RTX 4090 Laptop">NVIDIA GeForce RTX 4090 Laptop</option>
+              <option value="NVIDIA GeForce RTX 4080 Laptop">NVIDIA GeForce RTX 4080 Laptop</option>
+              <option value="NVIDIA GeForce RTX 4070 Laptop">NVIDIA GeForce RTX 4070 Laptop</option>
+              <option value="NVIDIA GeForce RTX 4060 Laptop">NVIDIA GeForce RTX 4060 Laptop</option>
+              <option value="NVIDIA GeForce RTX 4050 Laptop">NVIDIA GeForce RTX 4050 Laptop</option>
+              <option value="NVIDIA GeForce RTX 3070 Laptop">NVIDIA GeForce RTX 3070 Laptop</option>
+              <option value="NVIDIA GeForce RTX 3060 Laptop">NVIDIA GeForce RTX 3060 Laptop</option>
+            </optgroup>
+            <option value="custom">Enter another model…</option>
+          </select>
+        </label>
+        <label class="field" hidden>Custom GPU
+          <input name="gpuCustom" type="text" placeholder="e.g. NVIDIA RTX 3070" autocomplete="off" spellcheck="false">
+        </label>
+        <div class="ram-field">
+          <div class="ram-top">
+            <label for="ram-slider">RAM</label>
+            <div class="ram-value">
+              <input name="ram" type="number" min="1" step="any" inputmode="decimal" value="32" aria-label="Exact RAM in GB">
+              <span aria-hidden="true">GB</span>
+            </div>
+          </div>
+          <input id="ram-slider" name="ramSlider" type="range" min="0" max="9" step="0.01" value="5" aria-valuetext="32 GB">
+          <div class="ram-scale" aria-hidden="true"><span>4 GB</span><span>128 GB</span></div>
+        </div>
+      </form>
+
+      <section class="result" aria-labelledby="verdict">
+        <div class="outlook" role="status" aria-atomic="true">
+          <h2 class="verdict" id="verdict">Checking specs…</h2>
+          <p class="estimate-label" id="estimate-label">Community Xbox Series X comparison</p>
+          <p class="verdict-reason" id="verdict-reason" hidden></p>
+          <dl class="comparison">
+            <div>
+              <dt>CPU <span id="cpu-reference"></span></dt>
+              <dd id="cpu-result">—</dd>
+            </div>
+            <div>
+              <dt>GPU <span id="gpu-reference"></span></dt>
+              <dd id="gpu-result">—</dd>
+            </div>
+            <div>
+              <dt>RAM <span id="ram-reference"></span></dt>
+              <dd id="ram-result">—</dd>
+            </div>
+          </dl>
+          <p class="vram-note" id="vram-note" hidden></p>
+        </div>
+        <div class="gameplay">
+          <p>Unofficial hardware estimate. Leonida compatibility and FPS are unverified.</p>
+        </div>
+        <details class="sources">
+          <summary>Sources</summary>
+          <p>Hardware ranges use community predictions and general PC benchmarks. They have not been validated in Leonida gameplay. The 32 GB PC RAM suggestion is community guidance.</p>
+          <ul>
+            <li><a href="https://github.com/ItsNotRexed/Leonida" target="_blank" rel="noopener">Leonida project</a></li>
+            <li><a href="https://www.xbox.com/en-US/consoles/xbox-series-x#tech-specs" target="_blank" rel="noopener">Xbox Series X specs</a></li>
+            <li><a href="https://www.tomshardware.com/reviews/cpu-hierarchy,4312-2.html" target="_blank" rel="noopener">CPU benchmark rankings</a> · <a href="https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" target="_blank" rel="noopener">GPU benchmark rankings</a></li>
+          </ul>
+        </details>
+        <noscript><p>Enable JavaScript to compare your specs.</p></noscript>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
