@@ -16,6 +16,22 @@ for (const select of document.querySelectorAll('.field select')) {
   popup.setAttribute('role', 'listbox');
   popup.setAttribute('aria-label', name);
   trigger.setAttribute('aria-controls', popup.id);
+  if (select.name === 'cpu' || select.name === 'gpu') {
+    const searchInput = document.createElement('input');
+    searchInput.type = 'search';
+    searchInput.placeholder = 'Search ' + name;
+    searchInput.setAttribute('aria-label', 'Search ' + name);
+    searchInput.className = 'menu-search';
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase().trim();
+      popup.querySelectorAll('.choice-option').forEach(option => option.hidden = !option.textContent.toLowerCase().includes(query));
+      popup.querySelectorAll('.choice-group').forEach(group => group.hidden = Boolean(query));
+    });
+    searchInput.addEventListener('keydown', event => {
+      if (event.key !== 'Escape' && event.key !== 'Tab') event.stopPropagation();
+    });
+    popup.append(searchInput);
+  }
   document.body.append(popup);
   label.append(trigger);
   select.hidden = true;
@@ -58,7 +74,12 @@ for (const select of document.querySelectorAll('.field select')) {
     position();
     popup.showPopover();
     trigger.setAttribute('aria-expanded', 'true');
-    focusOption(select.selectedIndex);
+    const searchInput = popup.querySelector('.menu-search');
+    if (searchInput) {
+      searchInput.value = '';
+      popup.querySelectorAll('.choice-option, .choice-group').forEach(option => option.hidden = false);
+      searchInput.focus();
+    } else focusOption(select.selectedIndex);
   }
   for (const child of select.children) {
     if (child.tagName === 'OPTGROUP') {

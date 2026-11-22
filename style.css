@@ -256,3 +256,5 @@ h1 {
 .sources p { margin-top: 7px; }
 .sources ul { padding-left: 18px; margin: 8px 0 0; }
 .sources li { margin-top: 4px; }
+
+.menu-search { position: sticky; top: 0; z-index: 1; width: 100%; min-height: 40px; margin-bottom: 8px; padding: 10px 14px; border: 1px solid #ffffff38; border-radius: 14px; background: #23182fed; color: #fff1f3; font: inherit; font-size: .875rem; }
