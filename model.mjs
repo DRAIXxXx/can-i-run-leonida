@@ -34,7 +34,7 @@ const gpuBands = {
     "rx 6700 xt", "rx 6700", "rx 6650 xt", "rx 6600 xt", "arc b580", "arc b570",
     "arc a770 16gb", "arc a750",
   ],
-  below: ["rtx 3060 8gb", "rtx 3050 8gb", "rtx 3050 6gb", "rtx 2060 super", "rtx 2060", "rx 6600", "rx 6500 xt"],
+  below: ["gtx 1650 super", "gtx 1660", "rx 5500 xt", "rtx 3060 8gb", "rtx 3050 8gb", "rtx 3050 6gb", "rtx 2060 super", "rtx 2060", "rx 6600", "rx 6500 xt"],
 };
 
 // Approximate desktop gaming bands around the community's Series X examples.
@@ -58,6 +58,43 @@ const seriesXGpuBands = {
   ],
   below: [...gpuBands.below, "rtx 5050", "rtx 3060 12gb", "rtx 2070 super", "rtx 2070",
     "rx 7600", "rx 6650 xt", "rx 6600 xt", "arc b570", "arc a750"],
+};
+
+// Additional ranges follow the community examples, with broad desktop bands.
+const ps5GpuBands = {
+  above: seriesXGpuBands.above,
+  near: [...seriesXGpuBands.near, "rtx 2070 super", "rtx 2080 super", "rtx 3060 12gb", "rx 6700"],
+  below: seriesXGpuBands.below.filter(model => !["rtx 2070 super", "rtx 3060 12gb"].includes(model)),
+};
+const proCpuBands = {
+  above: seriesXCpuBands.above.filter(model => !["5700x", "5800x"].includes(model)),
+  near: [...seriesXCpuBands.near, "5700x", "5800x"],
+  below: seriesXCpuBands.below,
+};
+const proGpuNear = ["rtx 5060 ti 16gb", "rx 9060 xt 16gb", "rtx 3070 ti", "rtx 2080 ti", "rtx 4060 ti 16gb", "rx 6800", "rx 7700 xt"];
+const proGpuAbove = seriesXGpuBands.above.filter(model => !proGpuNear.includes(model));
+const proGpuBands = {
+  above: proGpuAbove,
+  near: proGpuNear,
+  uncertain: ["rtx 5060 ti 8gb", "rx 9060 xt 8gb", "rtx 4060 ti 8gb"],
+  below: [...new Set([...gpuBands.above, ...gpuBands.near, ...gpuBands.below])].filter(model =>
+    ![...proGpuAbove, ...proGpuNear, "rtx 5060 ti 8gb", "rx 9060 xt 8gb", "rtx 4060 ti 8gb"].includes(model)),
+};
+const seriesSCpuBands = {
+  above: [...new Set([...seriesXCpuBands.above, ...seriesXCpuBands.near])],
+  near: ["3600", "3600x", "10400", "8700k"],
+  below: ["10100", "2600x", "1600"],
+};
+const seriesSGpuBands = {
+  above: [...gpuBands.above, ...gpuBands.near, ...gpuBands.below].filter(model => !["gtx 1650 super", "gtx 1660", "rx 5500 xt"].includes(model)),
+  near: ["gtx 1650 super", "gtx 1660", "rx 5500 xt"],
+  below: ["gtx 1650", "gtx 1050 ti", "rx 560"],
+};
+const consoleRanges = {
+  "series-x": { name: "Series X", CPU: seriesXCpuBands, GPU: seriesXGpuBands },
+  ps5: { name: "PS5", CPU: seriesXCpuBands, GPU: ps5GpuBands },
+  "ps5-pro": { name: "PS5 Pro", CPU: proCpuBands, GPU: proGpuBands },
+  "series-s": { name: "Series S", CPU: seriesSCpuBands, GPU: seriesSGpuBands },
 };
 
 const armCpu = /\b(?:snapdragon|arm64|aarch64)\b|\bapple\s+m\d+\b|^m[1-9]\d*(?:\s+(?:pro|max|ultra))?$/i;
@@ -142,29 +179,32 @@ export function assessHardware(cpu, gpu, ram, reference = "low") {
   const processor = cpu.trim();
   const graphics = gpu.trim();
   const memory = Number(ram);
-  const seriesX = reference === "series-x";
-  const memoryTarget = seriesX ? 32 : 16;
+  const consoleRange = consoleRanges[reference];
+  const consoleComparison = Boolean(consoleRange);
+  const memoryTarget = consoleComparison ? 32 : 16;
   let ramStatus = !Number.isFinite(memory) || memory < 1 ? "empty" : "near";
   if (ramStatus !== "empty") {
-    if (memory < memoryTarget) ramStatus = seriesX ? "uncertain" : "below";
+    if (memory < memoryTarget) ramStatus = consoleComparison ? "uncertain" : "below";
     if (memory > memoryTarget) ramStatus = "above";
   }
   const statuses = {
-    CPU: !processor ? "empty" : armCpu.test(processor) ? "outside" : bandFor(cpuKey(processor), seriesX ? seriesXCpuBands : cpuBands),
-    GPU: graphics ? bandFor(gpuKey(graphics), seriesX ? seriesXGpuBands : gpuBands) : "empty",
+    CPU: !processor ? "empty" : armCpu.test(processor) ? "outside" : bandFor(cpuKey(processor), consoleRange?.CPU ?? cpuBands),
+    GPU: graphics ? bandFor(gpuKey(graphics), consoleRange?.GPU ?? gpuBands) : "empty",
     RAM: ramStatus,
   };
 
   const parts = Object.values(statuses);
   if (statuses.CPU === "outside") return { verdict: "Your PC is outside Leonida’s x64 target", statuses };
   if (parts.includes("empty")) return { verdict: "Enter your PC specs", statuses };
-  if (seriesX) {
-    if (parts.includes("below")) return { verdict: "Below the Series X hardware range", statuses };
-    if (parts.includes("unknown")) return { verdict: "Partial Series X comparison", statuses };
+  if (consoleComparison) {
+    const name = consoleRange.name;
+    if (parts.includes("below")) return { verdict: `Below the ${name} hardware range`, statuses };
+    if (parts.includes("unknown")) return { verdict: `Partial ${name} comparison`, statuses };
+    if (statuses.GPU === "uncertain") return { verdict: `Uncertain ${name} comparison`, statuses };
     if (statuses.CPU === "above" && statuses.GPU === "above") {
-      return { verdict: "Above the Series X hardware range", statuses };
+      return { verdict: `Above the ${name} hardware range`, statuses };
     }
-    return { verdict: "Around the Series X hardware range", statuses };
+    return { verdict: `Around the ${name} hardware range`, statuses };
   }
   if (parts.includes("below")) return { verdict: "Your PC may struggle to run Leonida", statuses };
   if (parts.includes("unknown")) return { verdict: "Your PC’s outlook is unclear", statuses };

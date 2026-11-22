@@ -1,4 +1,4 @@
-import { assessHardware, graphicsMemory } from "./model.mjs";
+import { assessHardware, graphicsMemory } from "./model.mjs?v=3";
 
 const form = document.getElementById("settings");
 const verdict = document.getElementById("verdict");
@@ -20,6 +20,24 @@ const references = {
     label: "Community Xbox Series X comparison",
     CPU: "Ryzen 7 3700X or Ryzen 5 5600",
     GPU: "RTX 3060 Ti / 3070 or RX 6700 XT / 6800",
+    RAM: "32 GB suggested for PCs",
+  },
+  ps5: {
+    label: "Community PS5 comparison",
+    CPU: "Ryzen 7 3700X class",
+    GPU: "RTX 2070 Super / 3070 or RX 6700 XT",
+    RAM: "32 GB suggested for PCs",
+  },
+  "ps5-pro": {
+    label: "Community PS5 Pro comparison",
+    CPU: "Ryzen 7 3700X to 5700X class",
+    GPU: "RTX 5060 Ti 16 GB or RX 9060 XT 16 GB",
+    RAM: "32 GB suggested for PCs",
+  },
+  "series-s": {
+    label: "Community Xbox Series S comparison",
+    CPU: "Ryzen 5 3600 class",
+    GPU: "GTX 1650 Super / 1660 or RX 5500 XT",
     RAM: "32 GB suggested for PCs",
   },
   low: {
@@ -57,14 +75,14 @@ function update(fromSlider = false) {
   ramSlider.setAttribute("aria-valuetext", `${ramPresets[Math.round(ramSlider.valueAsNumber)]} GB`);
   const processor = selectedModel(cpu, cpuCustom);
   const graphics = selectedModel(gpu, gpuCustom);
-  const seriesX = reference.value === "series-x";
+  const consoleComparison = reference.value !== "low";
   const baseline = references[reference.value];
   const result = assessHardware(processor, graphics, ram.value, reference.value);
   if (verdict.textContent !== result.verdict) verdict.textContent = result.verdict;
   if (estimateLabel.textContent !== baseline.label) estimateLabel.textContent = baseline.label;
   const names = { CPU: processor.trim(), GPU: graphics.trim(), RAM: `${ram.value} GB of RAM` };
   const below = Object.keys(names).filter(part => result.statuses[part] === "below");
-  const comparison = seriesX ? "the reference range" : "the estimate";
+  const comparison = consoleComparison ? "the reference range" : "the estimate";
   let reason = "";
   if (result.statuses.CPU === "outside") {
     reason = "Leonida currently targets Windows PCs with x64 processors.";
@@ -84,7 +102,7 @@ function update(fromSlider = false) {
     row.textContent = statusLabel[status];
   }
   const vram = graphicsMemory(graphics);
-  vramNote.hidden = seriesX || !vram || Number(vram) >= 12;
+  vramNote.hidden = consoleComparison || !vram || Number(vram) >= 12;
   const note = vramNote.hidden ? "" : `VRAM: ${vram} GB selected, 12 GB on both reference cards.`;
   if (vramNote.textContent !== note) vramNote.textContent = note;
 

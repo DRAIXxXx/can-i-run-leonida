@@ -8,7 +8,7 @@
   <title>Can I Run Leonida</title>
   <link rel="icon" href="leonida-logo.png" type="image/png">
   <link rel="stylesheet" href="style.css?v=2">
-  <script type="module" src="app.mjs"></script>
+  <script type="module" src="app.mjs?v=3"></script>
   <script type="module" src="menus.mjs"></script>
   <script type="module" src="backgrounds.mjs"></script>
 </head>
@@ -25,6 +25,9 @@
         <label class="field">Compare to
           <select name="reference">
             <option value="series-x">Xbox Series X</option>
+            <option value="ps5">PS5</option>
+            <option value="ps5-pro">PS5 Pro</option>
+            <option value="series-s">Xbox Series S</option>
             <option value="low">Community estimate for 1080p Low</option>
           </select>
         </label>
@@ -125,6 +128,8 @@
               <option value="NVIDIA GeForce RTX 2070 Super">NVIDIA GeForce RTX 2070 Super</option>
               <option value="NVIDIA GeForce RTX 2070">NVIDIA GeForce RTX 2070</option>
               <option value="NVIDIA GeForce RTX 2060 Super">NVIDIA GeForce RTX 2060 Super</option>
+              <option value="NVIDIA GeForce GTX 1650 Super">NVIDIA GeForce GTX 1650 Super</option>
+              <option value="NVIDIA GeForce GTX 1660">NVIDIA GeForce GTX 1660</option>
               <option value="NVIDIA GeForce RTX 2060">NVIDIA GeForce RTX 2060</option>
             </optgroup>
             <optgroup label="AMD Radeon">
@@ -150,6 +155,7 @@
               <option value="AMD Radeon RX 6650 XT">AMD Radeon RX 6650 XT</option>
               <option value="AMD Radeon RX 6600 XT">AMD Radeon RX 6600 XT</option>
               <option value="AMD Radeon RX 6600">AMD Radeon RX 6600</option>
+              <option value="AMD Radeon RX 5500 XT">AMD Radeon RX 5500 XT</option>
               <option value="AMD Radeon RX 6500 XT">AMD Radeon RX 6500 XT</option>
             </optgroup>
             <optgroup label="Intel Arc">
@@ -214,7 +220,7 @@
         </div>
         <details class="sources">
           <summary>Sources</summary>
-          <p>Hardware ranges use community predictions and general PC benchmarks. They have not been validated in Leonida gameplay. The 32 GB PC RAM suggestion is community guidance.</p>
+          <p>Hardware ranges use community predictions and general PC benchmarks. They have not been validated in Leonida gameplay. All four console comparisons use the admin’s approximate PC equivalents. The 32 GB PC RAM suggestion is community guidance, while 16 GB remains uncertain. Console shared memory and PC RAM are different arrangements. PS5 Pro estimates vary with the game and upscaling mode.</p>
           <ul>
             <li><a href="https://github.com/ItsNotRexed/Leonida" target="_blank" rel="noopener">Leonida project</a></li>
             <li><a href="https://www.xbox.com/en-US/consoles/xbox-series-x#tech-specs" target="_blank" rel="noopener">Xbox Series X specs</a></li>
