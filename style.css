@@ -261,3 +261,8 @@ h1 {
 
 .menu-search::placeholder { color: #dbc8dc; opacity: 1; }
 .menu-search:focus { border-color: #9af7e380; outline: none; box-shadow: 0 0 0 2px #9af7e318; }
+
+@media (pointer: coarse) {
+  .menu-search { font-size: 16px; }
+  .choice-option { min-height: 44px; touch-action: manipulation; }
+}

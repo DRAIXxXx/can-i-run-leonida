@@ -60,8 +60,11 @@ for (const select of document.querySelectorAll('.field select')) {
   }
   function position() {
     const rect = trigger.getBoundingClientRect();
-    const spaceBelow = innerHeight - rect.bottom - 16;
-    const above = spaceBelow < 220 && rect.top > spaceBelow;
+    const viewport = window.visualViewport;
+    const viewportTop = viewport?.offsetTop ?? 0;
+    const viewportBottom = viewportTop + (viewport?.height ?? innerHeight);
+    const spaceBelow = viewportBottom - rect.bottom - 16;
+    const above = spaceBelow < 220 && rect.top - viewportTop > spaceBelow;
     const height = Math.min(360, Math.max(120, above ? rect.top - 16 : spaceBelow));
     popup.style.width = Math.min(Math.max(rect.width, 280), innerWidth - 24) + 'px';
     popup.style.maxHeight = height + 'px';
@@ -78,7 +81,7 @@ for (const select of document.querySelectorAll('.field select')) {
     if (searchInput) {
       searchInput.value = '';
       popup.querySelectorAll('.choice-option, .choice-group').forEach(option => option.hidden = false);
-      searchInput.focus();
+      if (!matchMedia('(pointer: coarse)').matches) searchInput.focus({preventScroll: true});
     } else focusOption(select.selectedIndex);
   }
   for (const child of select.children) {
@@ -102,7 +105,7 @@ for (const select of document.querySelectorAll('.field select')) {
         select.selectedIndex = index;
         sync();
         close();
-        trigger.focus();
+        trigger.focus({preventScroll: true});
         select.dispatchEvent(new Event('input', {bubbles: true}));
       });
       popup.append(button);
@@ -140,7 +143,7 @@ for (const select of document.querySelectorAll('.field select')) {
     }
   });
   select.addEventListener('input', sync);
-  menus.push({close, trigger, popup});
+  menus.push({close, trigger, popup, position});
   sync();
 }
 document.addEventListener('pointerdown', event => {
@@ -148,7 +151,14 @@ document.addEventListener('pointerdown', event => {
     if (!menu.popup.contains(event.target) && !menu.trigger.contains(event.target)) menu.close();
   });
 });
-addEventListener('resize', () => menus.forEach(menu => menu.close()));
+function repositionOpenMenus() {
+  menus.forEach(menu => {
+    if (menu.popup.matches(':popover-open')) menu.position();
+  });
+}
+addEventListener('resize', repositionOpenMenus);
+window.visualViewport?.addEventListener('resize', repositionOpenMenus);
+window.visualViewport?.addEventListener('scroll', repositionOpenMenus);
 document.addEventListener('scroll', event => {
-  if (!menus.some(menu => menu.popup.contains(event.target))) menus.forEach(menu => menu.close());
+  if (!menus.some(menu => menu.popup.contains(event.target))) repositionOpenMenus();
 }, true);
