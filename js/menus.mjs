@@ -1,9 +1,15 @@
+import { matchesModel } from './catalog.mjs?v=1';
+
 const menus = [];
-const useMobilePicker = matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const useMobilePicker = matchMedia('(pointer: coarse)').matches || matchMedia('(max-width: 630px)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 for (const select of document.querySelectorAll('.field select')) {
-  if (useMobilePicker || !('showPopover' in HTMLElement.prototype)) continue;
   const label = select.closest('label');
   const name = label.firstChild.textContent.trim();
+  const native = useMobilePicker || !('showPopover' in HTMLElement.prototype);
+  if (native) {
+    if (select.name === 'cpu' || select.name === 'gpu') addNativeSearch(select, label, name);
+    continue;
+  }
   const trigger = document.createElement('button');
   trigger.type = 'button';
   trigger.className = 'menu-trigger';
@@ -24,11 +30,16 @@ for (const select of document.querySelectorAll('.field select')) {
     searchInput.setAttribute('aria-label', 'Search ' + name);
     searchInput.className = 'menu-search';
     searchInput.addEventListener('input', () => {
-      const query = searchInput.value.toLowerCase().trim();
-      popup.querySelectorAll('.choice-option').forEach(option => option.hidden = !option.textContent.toLowerCase().includes(query));
+      const query = searchInput.value.trim();
+      popup.querySelectorAll('.choice-option').forEach(option => option.hidden = option.dataset.custom !== 'true' && !matchesModel(option.textContent, query));
       popup.querySelectorAll('.choice-group').forEach(group => group.hidden = Boolean(query));
     });
     searchInput.addEventListener('keydown', event => {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        const index = buttons.findIndex(button => !button.hidden);
+        if (index >= 0) focusOption(index);
+      }
       if (event.key !== 'Escape' && event.key !== 'Tab') event.stopPropagation();
     });
     popup.append(searchInput);
@@ -54,7 +65,9 @@ for (const select of document.querySelectorAll('.field select')) {
     trigger.setAttribute('aria-expanded', 'false');
   }
   function focusOption(index) {
-    active = Math.max(0, Math.min(buttons.length - 1, index));
+    const visible = buttons.map((button, index) => index).filter(index => !buttons[index].hidden);
+    active = visible.includes(index) ? index : visible.find(i => i >= index) ?? visible.at(-1);
+    if (active === undefined) return;
     buttons.forEach((button, i) => button.tabIndex = i === active ? 0 : -1);
     buttons[active].focus({preventScroll: true});
     buttons[active].scrollIntoView({block: 'nearest'});
@@ -101,6 +114,7 @@ for (const select of document.querySelectorAll('.field select')) {
       button.className = 'choice-option';
       button.setAttribute('role', 'option');
       button.textContent = option.textContent;
+      if (option.value === 'custom') button.dataset.custom = 'true';
       button.tabIndex = -1;
       button.addEventListener('click', () => {
         select.selectedIndex = index;
@@ -124,7 +138,9 @@ for (const select of document.querySelectorAll('.field select')) {
     }
   });
   popup.addEventListener('keydown', event => {
-    const directions = {ArrowDown: active + 1, ArrowUp: active - 1, Home: 0, End: buttons.length - 1};
+    const visible = buttons.map((button, index) => index).filter(index => !buttons[index].hidden);
+    const position = visible.indexOf(active);
+    const directions = {ArrowDown: visible[Math.min(visible.length - 1, position + 1)], ArrowUp: visible[Math.max(0, position - 1)], Home: visible[0], End: visible.at(-1)};
     if (event.key in directions) {
       event.preventDefault();
       focusOption(directions[event.key]);
@@ -146,6 +162,39 @@ for (const select of document.querySelectorAll('.field select')) {
   select.addEventListener('input', sync);
   menus.push({close, trigger, popup, position});
   sync();
+}
+
+function addNativeSearch(select, label, name) {
+  // Keep the OS picker on touch devices, including Discord's embedded browser.
+  // Rebuild its options on search: hidden <option> is unreliable in iOS pickers.
+  const options = [...select.options].map(option => ({ value: option.value, text: option.textContent }));
+  const input = document.createElement('input');
+  input.type = 'search';
+  input.className = 'hardware-search';
+  input.placeholder = `Search ${name} (${options.length - 1} models)`;
+  input.setAttribute('aria-label', `Search ${name}`);
+  input.autocomplete = 'off';
+  input.spellcheck = false;
+  const status = document.createElement('span');
+  status.className = 'hardware-search-status';
+  status.setAttribute('role', 'status');
+  status.hidden = true;
+  label.insertBefore(input, select);
+  label.append(status);
+  select.setAttribute('aria-label', name);
+  input.addEventListener('input', () => {
+    const selected = select.value;
+    const query = input.value.trim();
+    const matches = options.filter(option => option.value !== 'custom' && matchesModel(option.text, query));
+    const choices = [...matches];
+    if (!choices.some(option => option.value === selected) && selected !== 'custom') {
+      choices.unshift(options.find(option => option.value === selected));
+    }
+    choices.push(options.find(option => option.value === 'custom'));
+    select.replaceChildren(...choices.filter(Boolean).map(option => new Option(option.text, option.value, false, option.value === selected)));
+    status.hidden = !query;
+    status.textContent = matches.length ? `${matches.length} matches · choose below` : 'No matches. Choose “Enter another model…” below.';
+  });
 }
 document.addEventListener('pointerdown', event => {
   menus.forEach(menu => {

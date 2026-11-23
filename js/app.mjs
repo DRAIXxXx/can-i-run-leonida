@@ -1,4 +1,4 @@
-import { assessHardware, graphicsMemory } from "./model.mjs?v=5";
+import { assessHardware, graphicsMemory } from "./model.mjs?v=6";
 
 const form = document.getElementById("settings");
 const verdict = document.getElementById("verdict");
@@ -95,6 +95,10 @@ function update(fromSlider = false) {
   } else if (below.length > 1) {
     reason = `Below ${comparison} for ${new Intl.ListFormat("en").format(below)}.`;
   }
+  const unknown = Object.keys(names).filter(part => result.statuses[part] === "unknown");
+  if (unknown.length) {
+    reason += `${reason ? " " : ""}No reliable comparison yet for ${new Intl.ListFormat("en").format(unknown.map(part => names[part]))}.`;
+  }
   verdictReason.hidden = !reason;
   if (verdictReason.textContent !== reason) verdictReason.textContent = reason;
   for (const [part, row] of Object.entries(resultRows)) {
@@ -124,5 +128,6 @@ ramSlider.addEventListener("keydown", event => {
   ramSlider.value = String(Math.max(0, Math.min(9, Math.round(ramSlider.valueAsNumber) + direction)));
   ramSlider.dispatchEvent(new Event("input", { bubbles: true }));
 });
+form.addEventListener("change", () => update());
 form.addEventListener("submit", event => event.preventDefault());
 update();

@@ -6,12 +6,13 @@ const cpuBands = {
     "285k", "265k", "245k", "14900k", "14700k", "14600k", "14400",
     "13900k", "13700k", "13600k", "12900k", "12700k", "12600k",
     "9850x3d", "9950x3d", "9800x3d", "9700x", "9600x", "7950x3d", "7800x3d",
-    "7700", "7700x", "7600x3d", "7600", "7600x", "5800x3d",
+    "7700", "7700x", "7600x3d", "7600", "7600x", "7500f", "5800x3d", "5700x3d",
+    "7950x", "7900x", "7900", "9950x", "9900x",
   ],
-  near: ["12400", "13400", "11700k", "11600k", "5700x", "5800x", "5600", "5600x"],
+  near: ["12400", "13400", "11700k", "11600k", "5700x", "5800x", "5900x", "5950x", "5600", "5600x"],
   below: [
     "13100", "12100", "11400", "11320h", "10700k", "10600k", "10400", "10100",
-    "9900k", "9700k", "8700k", "5600g", "5500", "3700x", "3600", "3600x", "2600x",
+    "9900k", "9700k", "8700k", "5600g", "5500", "3700x", "3600", "3600x", "2600x", "2600",
   ],
 };
 
@@ -40,10 +41,10 @@ const gpuBands = {
 // Approximate desktop gaming bands around the community's Series X examples.
 // A CPU or GPU band describes benchmark proximity, not a Leonida requirement.
 const seriesXCpuBands = {
-  above: [...cpuBands.above, "12400", "13400", "5700x", "5800x", "5600x"],
+  above: [...cpuBands.above, "12400", "13400", "5700x", "5800x", "5900x", "5950x", "5600x"],
   near: ["3700x", "5600", "11400", "11700k", "11600k", "10700k", "10600k",
     "9900k", "9700k", "13100", "12100", "5600g", "5500"],
-  below: ["11320h", "10400", "10100", "3600", "3600x", "2600x", "8700k"],
+  below: ["11320h", "10400", "10100", "3600", "3600x", "2600x", "2600", "8700k"],
 };
 const seriesXGpuBands = {
   above: gpuBands.above.filter(model => ![
@@ -83,7 +84,7 @@ const proGpuBands = {
 const seriesSCpuBands = {
   above: [...new Set([...seriesXCpuBands.above, ...seriesXCpuBands.near])],
   near: ["3600", "3600x", "10400", "8700k", "11320h"],
-  below: ["10100", "2600x", "1600"],
+  below: ["10100", "2600x", "2600", "1600"],
 };
 const seriesSGpuBands = {
   above: [...gpuBands.above, ...gpuBands.near, ...gpuBands.below].filter(model => !["gtx 1650 laptop", "gtx 1650 super", "gtx 1660", "rx 5500 xt"].includes(model)),
@@ -350,9 +351,18 @@ function cpuKey(processor) {
     return `ai ${/\bmax\b/i.test(processor) ? "max " : ""}${number}`;
   }
   if (/\b(?:ryzen|core\s+ultra)\b/i.test(processor)) {
-    return processor.match(/\b\d{3,5}[a-z\d]*\b/i)?.[0].toLowerCase();
+    const key = processor.match(/\b\d{3,5}[a-z\d]*\b/i)?.[0].toLowerCase();
+    return /\bcore\s+ultra\b/i.test(processor) ? key?.replace(/k[fs]$/, "k") : key;
   }
-  return processor.match(/\bi[3579][\s-]*(\d{4,5}[a-z]*)\b/i)?.[1].toLowerCase().replace(/f$/, "");
+  const key = processor.match(/\bi[3579][\s-]*(\d{4,5}[a-z]*)\b/i)?.[1].toLowerCase().replace(/k[fs]$/, "k").replace(/f$/, "");
+  // These desktop suffix variants share a broad comparison band. Preserve
+  // laptop suffixes and the materially different i5-12600 versus 12600K.
+  const aliases = { "14900": "14900k", "14700": "14700k", "14600": "14600k",
+    "13900": "13900k", "13700": "13700k", "13600": "13600k",
+    "12900": "12900k", "12700": "12700k", "11700": "11700k",
+    "11600": "11600k", "10700": "10700k", "10600": "10600k",
+    "9900": "9900k", "9700": "9700k", "8700": "8700k" };
+  return aliases[key] ?? key;
 }
 
 function gpuModel(graphics) {
