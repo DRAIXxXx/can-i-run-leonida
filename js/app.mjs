@@ -1,4 +1,4 @@
-import { assessHardware, graphicsMemory } from "./model.mjs?v=4";
+import { assessHardware, graphicsMemory } from "./model.mjs?v=5";
 
 const form = document.getElementById("settings");
 const verdict = document.getElementById("verdict");
@@ -88,7 +88,7 @@ function update(fromSlider = false) {
   const below = Object.keys(names).filter(part => result.statuses[part] === "below");
   const comparison = consoleComparison ? "the reference range" : "the estimate";
   let reason = "";
-  if (result.statuses.CPU === "outside") {
+  if (result.statuses.CPU === "outside" || result.statuses.GPU === "outside") {
     reason = "Leonida currently targets Windows PCs with x64 processors.";
   } else if (below.length === 1) {
     reason = `${names[below[0]]} falls below ${comparison}.`;
