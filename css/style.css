@@ -292,6 +292,18 @@ h1 {
 .menu-search::placeholder { color: #dbc8dc; opacity: 1; }
 .menu-search:focus { border-color: #9af7e380; outline: none; box-shadow: 0 0 0 2px #9af7e318; }
 
+.hardware-search {
+  width: 100%; min-height: 44px; padding: 9px 15px;
+  border: 1px solid #ffffff38; border-radius: 999px;
+  background: #ffffff0b; color: #fff1f3;
+  -webkit-backdrop-filter: blur(24px) saturate(130%);
+  backdrop-filter: blur(24px) saturate(130%);
+  font: inherit; font-size: 16px;
+}
+.hardware-search::placeholder { color: #dbc8dc; opacity: 1; }
+.hardware-search:focus { border-color: var(--teal); outline: none; }
+.hardware-search-status { font-size: .8125rem; font-weight: 500; color: var(--muted); }
+
 @media (pointer: coarse) {
   .menu-search { font-size: 16px; }
   .choice-option { min-height: 44px; touch-action: manipulation; }
