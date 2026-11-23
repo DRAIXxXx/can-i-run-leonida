@@ -1,4 +1,4 @@
-import { matchesModel } from './catalog.mjs?v=1';
+import { matchesModel } from './catalog.mjs?v=2';
 
 const menus = [];
 const useMobilePicker = matchMedia('(pointer: coarse)').matches || matchMedia('(max-width: 630px)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);

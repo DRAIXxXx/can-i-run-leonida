@@ -7,7 +7,7 @@ export function matchesModel(name, query) {
 
 export async function loadHardwareCatalog() {
   try {
-    const response = await fetch(new URL("../assets/data/hardware.json?v=1", import.meta.url));
+    const response = await fetch(new URL("../assets/data/hardware.json?v=2", import.meta.url));
     if (!response.ok) throw new Error("Catalog unavailable");
     const data = await response.json();
     for (const kind of ["cpu", "gpu"]) {
