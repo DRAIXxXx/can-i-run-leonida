@@ -1,4 +1,4 @@
-import { matchesModel } from './catalog.mjs?v=2';
+import { matchesModel } from './catalog.mjs?v=3';
 
 const menus = [];
 const useMobilePicker = matchMedia('(pointer: coarse)').matches || matchMedia('(max-width: 630px)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -167,7 +167,11 @@ for (const select of document.querySelectorAll('.field select')) {
 function addNativeSearch(select, label, name) {
   // Keep the OS picker on touch devices, including Discord's embedded browser.
   // Rebuild its options on search: hidden <option> is unreliable in iOS pickers.
-  const options = [...select.options].map(option => ({ value: option.value, text: option.textContent }));
+  const options = [...select.options].map(option => ({
+    value: option.value,
+    text: option.textContent,
+    group: option.parentElement.tagName === 'OPTGROUP' ? option.parentElement.label : '',
+  }));
   const input = document.createElement('input');
   input.type = 'search';
   input.className = 'hardware-search';
@@ -191,7 +195,23 @@ function addNativeSearch(select, label, name) {
       choices.unshift(options.find(option => option.value === selected));
     }
     choices.push(options.find(option => option.value === 'custom'));
-    select.replaceChildren(...choices.filter(Boolean).map(option => new Option(option.text, option.value, false, option.value === selected)));
+    const nodes = [];
+    const groups = new Map();
+    for (const option of choices.filter(Boolean)) {
+      const node = new Option(option.text, option.value, false, option.value === selected);
+      if (!option.group) {
+        nodes.push(node);
+        continue;
+      }
+      if (!groups.has(option.group)) {
+        const group = document.createElement('optgroup');
+        group.label = option.group;
+        groups.set(option.group, group);
+        nodes.push(group);
+      }
+      groups.get(option.group).append(node);
+    }
+    select.replaceChildren(...nodes);
     status.hidden = !query;
     status.textContent = matches.length ? `${matches.length} matches · choose below` : 'No matches. Choose “Enter another model…” below.';
   });
