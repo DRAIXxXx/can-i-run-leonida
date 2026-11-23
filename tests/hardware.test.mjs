@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { assessHardware } from '../js/model.mjs';
-import { matchesModel } from '../js/catalog.mjs';
+import { matchesModel, hardwareSections } from '../js/catalog.mjs';
 
 test('catalog keeps relevant consumer hardware and excludes obsolete/server parts', async () => {
   const data = JSON.parse(await readFile(new URL('../assets/data/hardware.json', import.meta.url)));
@@ -44,6 +44,47 @@ test('search accepts common spacing and punctuation', () => {
   assert(matchesModel('NVIDIA GeForce RTX 3060 8 GB', 'rtx3060 8gb'));
   assert(matchesModel('AMD Ryzen 9 5900X', 'amd 5900x'));
   assert(!matchesModel('NVIDIA GeForce RTX 3070', '3060'));
+});
+
+test('CPUs sort by brand, series and model, with suffix variants together', () => {
+  const names = ['Intel Core i5-11400F', 'AMD Ryzen 5 5600', 'Intel Core i7-14700K',
+    'Intel Core i9-14900KF', 'AMD Ryzen 7 9800X3D', 'Intel Core Ultra 7 265H',
+    'Intel Core i9-14900K', 'Intel Core i5-14600K', 'AMD Ryzen 7 7800X3D'];
+  const sections = hardwareSections(names, 'cpu');
+  assert.deepEqual(sections.map(section => section.label), [
+    'Intel · Core Ultra 200 series', 'Intel · 14th gen Core', 'Intel · 11th gen Core',
+    'AMD · Ryzen 9000 series', 'AMD · Ryzen 7000 series', 'AMD · Ryzen 5000 series',
+  ]);
+  assert.deepEqual(sections[1].names, ['Intel Core i9-14900K', 'Intel Core i9-14900KF', 'Intel Core i7-14700K', 'Intel Core i5-14600K']);
+  assert.equal(hardwareSections(['Intel Core i7-1165G7'], 'cpu')[0].label, 'Intel · 11th gen Core');
+  assert.equal(hardwareSections(['Intel Core i7-1360P'], 'cpu')[0].label, 'Intel · 13th gen Core');
+});
+
+test('GPUs sort by brand, generation and model without alphabetic number errors', () => {
+  const names = ['AMD Radeon RX 580', 'NVIDIA GeForce RTX 3060 12 GB', 'Intel Arc A750',
+    'NVIDIA GeForce GTX 1080 Ti', 'NVIDIA GeForce RTX 5090', 'AMD Radeon RX 7900 XTX',
+    'NVIDIA GeForce RTX 3070', 'Intel Arc B580', 'NVIDIA GeForce RTX 3060 8 GB',
+    'NVIDIA GeForce GTX 1660'];
+  const sections = hardwareSections(names, 'gpu');
+  assert.deepEqual(sections.map(section => section.label), [
+    'NVIDIA · RTX 50 series', 'NVIDIA · RTX 30 series', 'NVIDIA · GTX 16 series',
+    'NVIDIA · GTX 10 series', 'AMD · Radeon RX 7000 series', 'AMD · Radeon RX 500 series',
+    'Intel · Arc B series', 'Intel · Arc A series',
+  ]);
+  assert.deepEqual(sections[1].names, ['NVIDIA GeForce RTX 3070', 'NVIDIA GeForce RTX 3060 8 GB', 'NVIDIA GeForce RTX 3060 12 GB']);
+  assert.equal(hardwareSections(['Intel Arc A350M'], 'gpu')[0].label, 'Intel · Arc A series');
+  assert.deepEqual(hardwareSections(['AMD Radeon RX 7900 XT', 'AMD Radeon RX 7900 XTX'], 'gpu')[0].names,
+    ['AMD Radeon RX 7900 XTX', 'AMD Radeon RX 7900 XT']);
+});
+
+test('sorting retains every catalog model and its exact name', async () => {
+  const data = JSON.parse(await readFile(new URL('../assets/data/hardware.json', import.meta.url)));
+  for (const kind of ['cpu', 'gpu']) {
+    const sorted = hardwareSections(data[kind], kind).flatMap(section => section.names);
+    assert.equal(sorted.length, data[kind].length);
+    assert.deepEqual(new Set(sorted), new Set(data[kind]));
+    assert.deepEqual(hardwareSections([...data[kind]].reverse(), kind), hardwareSections(data[kind], kind));
+  }
 });
 
 
